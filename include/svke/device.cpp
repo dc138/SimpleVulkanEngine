@@ -12,10 +12,10 @@
 #include <unordered_set>
 
 namespace svke {
-  static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
-                                                      VkDebugUtilsMessageTypeFlagsEXT message_type,
+  static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      message_severity,
+                                                      VkDebugUtilsMessageTypeFlagsEXT             message_type,
                                                       const VkDebugUtilsMessengerCallbackDataEXT *callback_data,
-                                                      void *user_data) {
+                                                      void *                                      user_data) {
     UNUSED(message_severity);
     UNUSED(message_type);
     UNUSED(user_data);
@@ -26,7 +26,7 @@ namespace svke {
 
   VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *create_info,
                                         const VkAllocationCallbacks *allocator,
-                                        VkDebugUtilsMessengerEXT *debug_messenger) {
+                                        VkDebugUtilsMessengerEXT *   debug_messenger) {
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
 
     if (func != nullptr) {
@@ -153,7 +153,7 @@ namespace svke {
     QueueFamilyIndices indices = pFindQueueFamilies(pPhysicalDevice);
 
     std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
-    std::set<uint32_t> unique_queue_families = {indices.graphics_family, indices.present_family};
+    std::set<uint32_t>                   unique_queue_families = {indices.graphics_family, indices.present_family};
 
     float queue_priority = 1.0f;
 
@@ -273,7 +273,7 @@ namespace svke {
   }
 
   std::vector<const char *> Device::getRequiredExtensions() {
-    uint32_t glfw_extension_count = 0;
+    uint32_t     glfw_extension_count = 0;
     const char **glfw_extensions;
     glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
 

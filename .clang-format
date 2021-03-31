@@ -5,3 +5,4 @@ SpaceBeforeCpp11BracedList: true
 FixNamespaceComments: false
 #IndentPPDirectives: AfterHash
 PointerAlignment: Left
+AlignConsecutiveDeclarations: true

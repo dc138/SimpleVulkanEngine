@@ -42,6 +42,14 @@ namespace svke {
     vertex_input_info.pVertexAttributeDescriptions = nullptr;
     vertex_input_info.pVertexBindingDescriptions = nullptr;
 
+    VkPipelineViewportStateCreateInfo viewportInfo {};
+
+    viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportInfo.viewportCount = 1;
+    viewportInfo.pViewports = &config.viewport;
+    viewportInfo.scissorCount = 1;
+    viewportInfo.pScissors = &config.scissor;
+
     VkGraphicsPipelineCreateInfo pipeline_info {};
 
     pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -49,7 +57,7 @@ namespace svke {
     pipeline_info.pStages = shader_stages;
     pipeline_info.pVertexInputState = &vertex_input_info;
     pipeline_info.pInputAssemblyState = &config.input_assembly_info;
-    pipeline_info.pViewportState = &config.viewport_info;
+    pipeline_info.pViewportState = &viewportInfo;
     pipeline_info.pRasterizationState = &config.rasterization_info;
     pipeline_info.pMultisampleState = &config.multisample_info;
     pipeline_info.pColorBlendState = &config.colorblend_info;
@@ -75,9 +83,11 @@ namespace svke {
     vkDestroyPipeline(pDevice.getDevice(), pGraphicsPipeline, nullptr);
   }
 
-  PipelineConfig Pipeline::DefaultPipelineConfig(uint32_t width, uint32_t height) {
-    PipelineConfig config {};
+  void Pipeline::Bind(VkCommandBuffer command_buffer) {
+    vkCmdBindPipeline(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pGraphicsPipeline);
+  }
 
+  void Pipeline::DefaultPipelineConfig(PipelineConfig& config, uint32_t width, uint32_t height) {
     config.input_assembly_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
     config.input_assembly_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     config.input_assembly_info.primitiveRestartEnable = VK_FALSE;
@@ -91,12 +101,6 @@ namespace svke {
 
     config.scissor.offset = {0, 0};
     config.scissor.extent = {width, height};
-
-    config.viewport_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-    config.viewport_info.viewportCount = 1;
-    config.viewport_info.pViewports = &config.viewport;
-    config.viewport_info.scissorCount = 1;
-    config.viewport_info.pScissors = &config.scissor;
 
     config.rasterization_info.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     config.rasterization_info.depthClampEnable = VK_FALSE;
@@ -148,8 +152,6 @@ namespace svke {
     config.depth_stencil_info.stencilTestEnable = VK_FALSE;
     config.depth_stencil_info.front = {};  // Optional
     config.depth_stencil_info.back = {};   // Optional
-
-    return config;
   }
 
   std::vector<char> Pipeline::pReadFile(const std::string& path) {
@@ -159,7 +161,7 @@ namespace svke {
       throw std::runtime_error("Cannot open provided filepath: " + path);
     }
 
-    size_t size = file.tellg();
+    uint64_t          size = file.tellg();
     std::vector<char> buffer(size);
 
     file.seekg(0);

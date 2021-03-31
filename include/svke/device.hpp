@@ -8,17 +8,17 @@
 
 namespace svke {
   struct SwapChainSupportDetails {
-    VkSurfaceCapabilitiesKHR capabilities;
+    VkSurfaceCapabilitiesKHR        capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR> present_modes;
+    std::vector<VkPresentModeKHR>   present_modes;
   };
 
   struct QueueFamilyIndices {
     uint32_t graphics_family;
     uint32_t present_family;
-    bool graphics_family_has_value = false;
-    bool present_family_has_value = false;
-    bool IsComplete() { return graphics_family_has_value && present_family_has_value; }
+    bool     graphics_family_has_value = false;
+    bool     present_family_has_value = false;
+    bool     IsComplete() { return graphics_family_has_value && present_family_has_value; }
   };
 
   class Device {
@@ -33,24 +33,24 @@ namespace svke {
 
    public:
     VkCommandPool getCommandPool() { return pCommandPool; }
-    VkDevice getDevice() { return pDevice; }
-    VkSurfaceKHR getSurface() { return pSurface; }
-    VkQueue getGraphicsQueue() { return pGraphicsQueue; }
-    VkQueue getPresentQueue() { return pPresentQueue; }
+    VkDevice      getDevice() { return pDevice; }
+    VkSurfaceKHR  getSurface() { return pSurface; }
+    VkQueue       getGraphicsQueue() { return pGraphicsQueue; }
+    VkQueue       getPresentQueue() { return pPresentQueue; }
 
    public:
     SwapChainSupportDetails getSwapChainSupport() { return pQuerySwapChainSupport(pPhysicalDevice); }
-    uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-    QueueFamilyIndices FindPhysicalQueueFamilies() { return pFindQueueFamilies(pPhysicalDevice); }
-    VkFormat FindSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
-                                 VkFormatFeatureFlags features);
+    uint32_t                FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+    QueueFamilyIndices      FindPhysicalQueueFamilies() { return pFindQueueFamilies(pPhysicalDevice); }
+    VkFormat                FindSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
+                                                VkFormatFeatureFlags features);
 
    public:
     void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer,
                       VkDeviceMemory &buffer_memory);
     VkCommandBuffer BeginSingleTimeCommands();
-    void EndSingleTimeCommands(VkCommandBuffer command_buffer);
-    void CopyBuffer(VkBuffer src_buffer, VkBuffer dst_uffer, VkDeviceSize size);
+    void            EndSingleTimeCommands(VkCommandBuffer command_buffer);
+    void            CopyBuffer(VkBuffer src_buffer, VkBuffer dst_uffer, VkDeviceSize size);
     void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layer_count);
 
     void CreateImageWithInfo(const VkImageCreateInfo &image_info, VkMemoryPropertyFlags properties, VkImage &image,
@@ -67,27 +67,27 @@ namespace svke {
     void pCreateCommandPool();
 
    private:
-    bool pDeviceSuitable(VkPhysicalDevice device);
+    bool                      pDeviceSuitable(VkPhysicalDevice device);
     std::vector<const char *> getRequiredExtensions();
-    bool pCheckValidationLayerSupport();
-    QueueFamilyIndices pFindQueueFamilies(VkPhysicalDevice device);
-    void pPopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &create_info);
-    void pHasGflwRequiredInstanceExtensions();
-    bool pCheckDeviceExtensionSupport(VkPhysicalDevice device);
-    SwapChainSupportDetails pQuerySwapChainSupport(VkPhysicalDevice device);
+    bool                      pCheckValidationLayerSupport();
+    QueueFamilyIndices        pFindQueueFamilies(VkPhysicalDevice device);
+    void                      pPopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &create_info);
+    void                      pHasGflwRequiredInstanceExtensions();
+    bool                      pCheckDeviceExtensionSupport(VkPhysicalDevice device);
+    SwapChainSupportDetails   pQuerySwapChainSupport(VkPhysicalDevice device);
 
    private:
-    VkInstance pInstance;
+    VkInstance               pInstance;
     VkDebugUtilsMessengerEXT pDebugMessenger;
-    VkPhysicalDevice pPhysicalDevice = VK_NULL_HANDLE;
-    Window &pWindow;
-    VkCommandPool pCommandPool;
+    VkPhysicalDevice         pPhysicalDevice = VK_NULL_HANDLE;
+    Window &                 pWindow;
+    VkCommandPool            pCommandPool;
 
    private:
-    VkDevice pDevice;
+    VkDevice     pDevice;
     VkSurfaceKHR pSurface;
-    VkQueue pGraphicsQueue;
-    VkQueue pPresentQueue;
+    VkQueue      pGraphicsQueue;
+    VkQueue      pPresentQueue;
 
    private:
     const std::vector<const char *> pValidationLayers = {"VK_LAYER_KHRONOS_validation"};

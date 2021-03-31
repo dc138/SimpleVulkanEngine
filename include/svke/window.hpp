@@ -18,6 +18,8 @@ namespace svke {
     bool ShouldClose();
     void PollEvents();
 
+    VkExtent2D getExtent() { return {pWidth, pHeight}; }
+
     friend class Device;
 
    private:
