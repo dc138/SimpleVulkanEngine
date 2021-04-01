@@ -57,13 +57,19 @@ namespace svke {
   }
 
   void Application::pCreatePipelineLayout() {
+    VkPushConstantRange push_constant_range {};
+
+    push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+    push_constant_range.offset     = 0;
+    push_constant_range.size       = sizeof(TestPushConstantData);
+
     VkPipelineLayoutCreateInfo pipeline_layout_info {};
 
     pipeline_layout_info.sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipeline_layout_info.setLayoutCount         = 0;
     pipeline_layout_info.pSetLayouts            = nullptr;
-    pipeline_layout_info.pushConstantRangeCount = 0;
-    pipeline_layout_info.pPushConstantRanges    = nullptr;
+    pipeline_layout_info.pushConstantRangeCount = 1;
+    pipeline_layout_info.pPushConstantRanges    = &push_constant_range;
 
     if (vkCreatePipelineLayout(pDevice.getDevice(), &pipeline_layout_info, nullptr, &pPipelineLayout) != VK_SUCCESS) {
       throw std::runtime_error("Failed to create pipeline layout");
@@ -208,7 +214,21 @@ namespace svke {
 
     pPipeline->Bind(pCommandBuffer[image_index]);
     pModel->Bind(pCommandBuffer[image_index]);
-    pModel->Draw(pCommandBuffer[image_index]);
+
+    for (uint32_t j = 0; j < 5; j++) {
+      TestPushConstantData push {};
+
+      push.offset = {j * 0.05f, j * 0.05f};
+
+      vkCmdPushConstants(pCommandBuffer[image_index],
+                         pPipelineLayout,
+                         VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                         0,
+                         sizeof(TestPushConstantData),
+                         &push);
+
+      pModel->Draw(pCommandBuffer[image_index]);
+    }
 
     vkCmdEndRenderPass(pCommandBuffer[image_index]);
 

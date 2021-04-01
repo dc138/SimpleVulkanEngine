@@ -10,6 +10,10 @@
 #include "window.hpp"
 
 namespace svke {
+  struct TestPushConstantData {
+    glm::vec2 offset;
+  };
+
   class Application {
    public:
     Application(uint32_t width, uint32_t height, const std::string& window_name);
