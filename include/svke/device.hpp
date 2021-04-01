@@ -15,7 +15,7 @@ namespace svke {
     uint32_t graphics_family;
     uint32_t present_family;
     bool     graphics_family_has_value = false;
-    bool     present_family_has_value = false;
+    bool     present_family_has_value  = false;
     bool     IsComplete() { return graphics_family_has_value && present_family_has_value; }
   };
 
@@ -26,7 +26,7 @@ namespace svke {
 
     Device(const Device &) = delete;
     void operator=(const Device &) = delete;
-    Device(Device &&) = delete;
+    Device(Device &&)              = delete;
     Device &operator=(Device &&) = delete;
 
    public:

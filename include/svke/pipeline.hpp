@@ -18,8 +18,8 @@ namespace svke {
     VkPipelineColorBlendStateCreateInfo    colorblend_info;
     VkPipelineDepthStencilStateCreateInfo  depth_stencil_info;
     VkPipelineLayout                       pipeline_layout = nullptr;
-    VkRenderPass                           render_pass = nullptr;
-    uint32_t                               subpass = 0;
+    VkRenderPass                           render_pass     = nullptr;
+    uint32_t                               subpass         = 0;
   };
 
   class Pipeline {

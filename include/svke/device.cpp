@@ -77,33 +77,33 @@ namespace svke {
     }
 #endif
 
-    VkApplicationInfo app_info = {};
-    app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    app_info.pApplicationName = "SimpleVulkanEngine Application";
+    VkApplicationInfo app_info  = {};
+    app_info.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    app_info.pApplicationName   = "SimpleVulkanEngine Application";
     app_info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    app_info.pEngineName = "SimpleVulkanEngine";
-    app_info.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    app_info.apiVersion = VK_API_VERSION_1_0;
+    app_info.pEngineName        = "SimpleVulkanEngine";
+    app_info.engineVersion      = VK_MAKE_VERSION(1, 0, 0);
+    app_info.apiVersion         = VK_API_VERSION_1_0;
 
     VkInstanceCreateInfo create_info = {};
-    create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    create_info.pApplicationInfo = &app_info;
+    create_info.sType                = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    create_info.pApplicationInfo     = &app_info;
 
-    auto extensions = getRequiredExtensions();
-    create_info.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+    auto extensions                     = getRequiredExtensions();
+    create_info.enabledExtensionCount   = static_cast<uint32_t>(extensions.size());
     create_info.ppEnabledExtensionNames = extensions.data();
 
 #ifdef SVKE_DEBUG
     VkDebugUtilsMessengerCreateInfoEXT debug_create_info;
 
-    create_info.enabledLayerCount = static_cast<uint32_t>(pValidationLayers.size());
+    create_info.enabledLayerCount   = static_cast<uint32_t>(pValidationLayers.size());
     create_info.ppEnabledLayerNames = pValidationLayers.data();
 
     pPopulateDebugMessengerCreateInfo(debug_create_info);
     create_info.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debug_create_info;
 #else
     create_info.enabledLayerCount = 0;
-    create_info.pNext = nullptr;
+    create_info.pNext             = nullptr;
 #endif
 
     if (vkCreateInstance(&create_info, nullptr, &pInstance) != VK_SUCCESS) {
@@ -158,28 +158,28 @@ namespace svke {
 
     for (uint32_t queue_family : unique_queue_families) {
       VkDeviceQueueCreateInfo queueCreateInfo = {};
-      queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-      queueCreateInfo.queueFamilyIndex = queue_family;
-      queueCreateInfo.queueCount = 1;
-      queueCreateInfo.pQueuePriorities = &queue_priority;
+      queueCreateInfo.sType                   = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+      queueCreateInfo.queueFamilyIndex        = queue_family;
+      queueCreateInfo.queueCount              = 1;
+      queueCreateInfo.pQueuePriorities        = &queue_priority;
       queue_create_infos.push_back(queueCreateInfo);
     }
 
     VkPhysicalDeviceFeatures device_features = {};
-    device_features.samplerAnisotropy = VK_TRUE;
+    device_features.samplerAnisotropy        = VK_TRUE;
 
     VkDeviceCreateInfo create_info = {};
-    create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    create_info.sType              = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 
     create_info.queueCreateInfoCount = static_cast<uint32_t>(queue_create_infos.size());
-    create_info.pQueueCreateInfos = queue_create_infos.data();
+    create_info.pQueueCreateInfos    = queue_create_infos.data();
 
-    create_info.pEnabledFeatures = &device_features;
-    create_info.enabledExtensionCount = static_cast<uint32_t>(pDeviceExtensions.size());
+    create_info.pEnabledFeatures        = &device_features;
+    create_info.enabledExtensionCount   = static_cast<uint32_t>(pDeviceExtensions.size());
     create_info.ppEnabledExtensionNames = pDeviceExtensions.data();
 
 #ifdef SVKE_DEBUG
-    create_info.enabledLayerCount = static_cast<uint32_t>(pValidationLayers.size());
+    create_info.enabledLayerCount   = static_cast<uint32_t>(pValidationLayers.size());
     create_info.ppEnabledLayerNames = pValidationLayers.data();
 #else
     create_info.enabledLayerCount = 0;
@@ -197,8 +197,8 @@ namespace svke {
     QueueFamilyIndices queue_family_indices = FindPhysicalQueueFamilies();
 
     VkCommandPoolCreateInfo pool_info = {};
-    pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    pool_info.queueFamilyIndex = queue_family_indices.graphics_family;
+    pool_info.sType                   = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    pool_info.queueFamilyIndex        = queue_family_indices.graphics_family;
     pool_info.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
     if (vkCreateCommandPool(pDevice, &pool_info, nullptr, &pCommandPool) != VK_SUCCESS) {
@@ -226,7 +226,7 @@ namespace svke {
   }
 
   void Device::pPopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &create_info) {
-    create_info = {};
+    create_info       = {};
     create_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
     create_info.messageSeverity =
         VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
@@ -234,7 +234,7 @@ namespace svke {
                               VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                               VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
     create_info.pfnUserCallback = DebugCallback;
-    create_info.pUserData = nullptr;
+    create_info.pUserData       = nullptr;
   }
 
   void Device::pSetupDebugMessenger() {
@@ -348,13 +348,13 @@ namespace svke {
     int i = 0;
     for (const auto &queue_family : queue_families) {
       if (queue_family.queueCount > 0 && queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-        indices.graphics_family = i;
+        indices.graphics_family           = i;
         indices.graphics_family_has_value = true;
       }
       VkBool32 presentSupport = false;
       vkGetPhysicalDeviceSurfaceSupportKHR(device, i, pSurface, &presentSupport);
       if (queue_family.queueCount > 0 && presentSupport) {
-        indices.present_family = i;
+        indices.present_family           = i;
         indices.present_family_has_value = true;
       }
       if (indices.IsComplete()) {
@@ -423,9 +423,9 @@ namespace svke {
                             VkBuffer &            buffer,
                             VkDeviceMemory &      bufferMemory) {
     VkBufferCreateInfo bufferInfo {};
-    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferInfo.size = size;
-    bufferInfo.usage = usage;
+    bufferInfo.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferInfo.size        = size;
+    bufferInfo.usage       = usage;
     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
     if (vkCreateBuffer(pDevice, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
@@ -436,8 +436,8 @@ namespace svke {
     vkGetBufferMemoryRequirements(pDevice, buffer, &mem_requirements);
 
     VkMemoryAllocateInfo alloc_info {};
-    alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    alloc_info.allocationSize = mem_requirements.size;
+    alloc_info.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    alloc_info.allocationSize  = mem_requirements.size;
     alloc_info.memoryTypeIndex = FindMemoryType(mem_requirements.memoryTypeBits, properties);
 
     if (vkAllocateMemory(pDevice, &alloc_info, nullptr, &bufferMemory) != VK_SUCCESS) {
@@ -449,9 +449,9 @@ namespace svke {
 
   VkCommandBuffer Device::BeginSingleTimeCommands() {
     VkCommandBufferAllocateInfo alloc_info {};
-    alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    alloc_info.commandPool = pCommandPool;
+    alloc_info.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    alloc_info.level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    alloc_info.commandPool        = pCommandPool;
     alloc_info.commandBufferCount = 1;
 
     VkCommandBuffer command_buffer;
@@ -469,9 +469,9 @@ namespace svke {
     vkEndCommandBuffer(command_buffer);
 
     VkSubmitInfo submit_info {};
-    submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submit_info.sType              = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submit_info.commandBufferCount = 1;
-    submit_info.pCommandBuffers = &command_buffer;
+    submit_info.pCommandBuffers    = &command_buffer;
 
     vkQueueSubmit(pGraphicsQueue, 1, &submit_info, VK_NULL_HANDLE);
     vkQueueWaitIdle(pGraphicsQueue);
@@ -485,7 +485,7 @@ namespace svke {
     VkBufferCopy copy_region {};
     copy_region.srcOffset = 0;  // Optional
     copy_region.dstOffset = 0;  // Optional
-    copy_region.size = size;
+    copy_region.size      = size;
     vkCmdCopyBuffer(command_buffer, srcBuffer, dstBuffer, 1, &copy_region);
 
     EndSingleTimeCommands(command_buffer);
@@ -499,14 +499,14 @@ namespace svke {
     VkCommandBuffer command_buffer = BeginSingleTimeCommands();
 
     VkBufferImageCopy region {};
-    region.bufferOffset = 0;
-    region.bufferRowLength = 0;
+    region.bufferOffset      = 0;
+    region.bufferRowLength   = 0;
     region.bufferImageHeight = 0;
 
-    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel       = 0;
     region.imageSubresource.baseArrayLayer = 0;
-    region.imageSubresource.layerCount = layer_count;
+    region.imageSubresource.layerCount     = layer_count;
 
     region.imageOffset = {0, 0, 0};
     region.imageExtent = {width, height, 1};
@@ -527,8 +527,8 @@ namespace svke {
     vkGetImageMemoryRequirements(pDevice, image, &mem_requirements);
 
     VkMemoryAllocateInfo alloc_info {};
-    alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    alloc_info.allocationSize = mem_requirements.size;
+    alloc_info.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    alloc_info.allocationSize  = mem_requirements.size;
     alloc_info.memoryTypeIndex = FindMemoryType(mem_requirements.memoryTypeBits, properties);
 
     if (vkAllocateMemory(pDevice, &alloc_info, nullptr, &imageMemory) != VK_SUCCESS) {

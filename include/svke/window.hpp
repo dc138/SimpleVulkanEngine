@@ -16,15 +16,21 @@ namespace svke {
     void PollEvents();
 
     VkExtent2D getExtent() { return {pWidth, pHeight}; }
+    bool       WasWindowResized() { return pFrameBufferResized; }
 
     friend class Device;
 
    private:
+    void pCreateWindow();
     void pCreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
+
+   private:
+    static void pFramebufferResizeCallback(GLFWwindow* window, uint32_t width, uint32_t height);
 
    private:
     uint32_t pWidth;
     uint32_t pHeight;
+    bool     pFrameBufferResized = false;
 
     GLFWwindow* pWindow;
     std::string pWindowName;

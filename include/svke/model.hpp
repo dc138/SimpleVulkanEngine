@@ -9,6 +9,7 @@ namespace svke {
    public:
     struct Vertex {
       glm::vec2 position;
+      glm::vec3 color;
 
       static std::vector<VkVertexInputBindingDescription>   getBindings();
       static std::vector<VkVertexInputAttributeDescription> getAtributes();

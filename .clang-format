@@ -7,4 +7,6 @@ FixNamespaceComments: false
 PointerAlignment: Left
 AlignConsecutiveDeclarations: true
 BinPackParameters: false
+BinPackArguments: false
 AllowAllParametersOfDeclarationOnNextLine: false
+AlignConsecutiveAssignments: true
