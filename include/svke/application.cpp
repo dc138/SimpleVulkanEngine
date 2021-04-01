@@ -16,7 +16,7 @@ namespace svke {
     }
 
     PipelineConfig pipeline_config {};
-    Pipeline::DefaultPipelineConfig(pipeline_config, width, height);
+    Pipeline::DefaultPipelineConfig(pipeline_config, pSwapChain.getWidth(), pSwapChain.getHeight());
 
     pipeline_config.render_pass = pSwapChain.getRenderPass();
     pipeline_config.pipeline_layout = pPipelineLayout;
@@ -26,23 +26,23 @@ namespace svke {
 
     pCommandBuffer.resize(pSwapChain.getImageCount());
 
-    VkCommandBufferAllocateInfo allocInfo {};
+    VkCommandBufferAllocateInfo alloc_info {};
 
-    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandPool = pDevice.getCommandPool();
-    allocInfo.commandBufferCount = static_cast<uint32_t>(pCommandBuffer.size());
+    alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    alloc_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    alloc_info.commandPool = pDevice.getCommandPool();
+    alloc_info.commandBufferCount = static_cast<uint32_t>(pCommandBuffer.size());
 
-    if (vkAllocateCommandBuffers(pDevice.getDevice(), &allocInfo, pCommandBuffer.data()) != VK_SUCCESS) {
+    if (vkAllocateCommandBuffers(pDevice.getDevice(), &alloc_info, pCommandBuffer.data()) != VK_SUCCESS) {
       throw std::runtime_error("Failed to allocate command buffers");
     }
 
     for (uint64_t i = 0; i < pCommandBuffer.size(); i++) {
-      VkCommandBufferBeginInfo beginInfo {};
+      VkCommandBufferBeginInfo begin_info {};
 
-      beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+      begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-      if (vkBeginCommandBuffer(pCommandBuffer[i], &beginInfo) != VK_SUCCESS) {
+      if (vkBeginCommandBuffer(pCommandBuffer[i], &begin_info) != VK_SUCCESS) {
         throw std::runtime_error("Failed to begin recording command buffer");
       }
 
@@ -68,6 +68,7 @@ namespace svke {
       vkCmdDraw(pCommandBuffer[i], 3, 1, 0, 0);
 
       vkCmdEndRenderPass(pCommandBuffer[i]);
+
       if (vkEndCommandBuffer(pCommandBuffer[i]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to record command buffer");
       }
