@@ -1,5 +1,6 @@
 #include "model.hpp"
 
+#include "defines.hpp"
 #include "pch.hpp"
 
 namespace svke {

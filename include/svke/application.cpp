@@ -1,5 +1,8 @@
 #include "application.hpp"
 
+#include "defines.hpp"
+#include "pch.hpp"
+
 void sierpinski(std::vector<svke::Model::Vertex>& vertices,
                 uint8_t                           depth,
                 svke::Model::Vertex               top,
@@ -187,6 +190,7 @@ namespace svke {
     vkCmdBeginRenderPass(pCommandBuffer[image_index], &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
 
     VkViewport viewport {};
+
     viewport.x        = 0.0f;
     viewport.y        = 0.0f;
     viewport.width    = static_cast<float>(pSwapChain->getSwapChainExtent().width);

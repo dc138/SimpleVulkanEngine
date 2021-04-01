@@ -1,11 +1,6 @@
-#if defined(NDEBUG) || defined(_DEBUG)
-#define SVKE_DEBUG
-#endif
-
-#define UNUSED(x) (void(x))
-
 #include "device.hpp"
 
+#include "defines.hpp"
 #include "pch.hpp"
 
 namespace svke {
@@ -122,7 +117,7 @@ namespace svke {
       throw std::runtime_error("Failed to find GPUs with Vulkan support");
     }
 
-#ifdef SVKE_VERBOSE_DEVICE
+#ifdef SVKE_VERBOSE_DEVICE_INFO
     std::cout << "Device count: " << device_count << std::endl;
 #endif
 
@@ -143,7 +138,7 @@ namespace svke {
 
     vkGetPhysicalDeviceProperties(pPhysicalDevice, &properties);
 
-#ifdef SVKE_VERBOSE_DEVICE
+#ifdef SVKE_VERBOSE_DEVICE_INFO
     std::cout << "Physical device: " << properties.deviceName << std::endl;
 #endif
   }
@@ -228,11 +223,20 @@ namespace svke {
   void Device::pPopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &create_info) {
     create_info       = {};
     create_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+
+#ifdef SVKE_VERBOSE_VALIDATION_LAYER
+    create_info.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
+                                  VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+                                  VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+#else
     create_info.messageSeverity =
         VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+#endif
+
     create_info.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
                               VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                               VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+
     create_info.pfnUserCallback = DebugCallback;
     create_info.pUserData       = nullptr;
   }
@@ -292,26 +296,26 @@ namespace svke {
     std::vector<VkExtensionProperties> extensions(extension_count);
     vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, extensions.data());
 
-#ifdef SVKE_VERBOSE_DEVICE
+#ifdef SVKE_VERBOSE_DEVICE_INFO
     std::cout << "Available extensions:" << std::endl;
 #endif
 
     std::unordered_set<std::string> available;
 
     for (const auto &extension : extensions) {
-#ifdef SVKE_VERBOSE_DEVICE
+#ifdef SVKE_VERBOSE_DEVICE_INFO
       std::cout << "\t" << extension.extensionName << std::endl;
 #endif
       available.insert(extension.extensionName);
     }
 
-#ifdef SVKE_VERBOSE_DEVICE
+#ifdef SVKE_VERBOSE_DEVICE_INFO
     std::cout << "Required extensions:" << std::endl;
 #endif
     auto required_extensions = getRequiredExtensions();
 
     for (const auto &required : required_extensions) {
-#ifdef SVKE_VERBOSE_DEVICE
+#ifdef SVKE_VERBOSE_DEVICE_INFO
       std::cout << "\t" << required << std::endl;
 #endif
       if (available.find(required) == available.end()) {

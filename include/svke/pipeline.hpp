@@ -1,6 +1,7 @@
 #ifndef SVKE_PIPELINE_HPP
 #define SVKE_PIPELINE_HPP
 
+#include "defines.hpp"
 #include "device.hpp"
 #include "pch.hpp"
 

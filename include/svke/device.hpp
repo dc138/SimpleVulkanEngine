@@ -1,6 +1,7 @@
 #ifndef SVKE_DEVICE_HPP
 #define SVKE_DEVICE_HPP
 
+#include "defines.hpp"
 #include "pch.hpp"
 #include "window.hpp"
 

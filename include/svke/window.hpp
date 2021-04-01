@@ -1,6 +1,7 @@
 #ifndef SVKE_WINDOW_HPP
 #define SVKE_WINDOW_HPP
 
+#include "defines.hpp"
 #include "pch.hpp"
 
 namespace svke {

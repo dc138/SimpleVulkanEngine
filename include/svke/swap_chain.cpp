@@ -1,12 +1,7 @@
 #include "swap_chain.hpp"
 
-#include <array>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <limits>
-#include <set>
-#include <stdexcept>
+#include "defines.hpp"
+#include "pch.hpp"
 
 namespace svke {
   SwapChain::SwapChain(Device &device, VkExtent2D window_extent) : pDevice {device}, pWindowExtent {window_extent} {
@@ -378,7 +373,7 @@ namespace svke {
   VkPresentModeKHR SwapChain::pChooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes) {
     for (const auto &available_present_mode : availablePresentModes) {
       if (available_present_mode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
-#ifdef SVKE_VERBOSE_DEVICE
+#ifdef SVKE_VERBOSE_PRESENT_MODE
         std::cout << "Present mode: Immediate" << std::endl;
 #endif
         return available_present_mode;
@@ -387,14 +382,14 @@ namespace svke {
 
     for (const auto &available_present_mode : availablePresentModes) {
       if (available_present_mode == VK_PRESENT_MODE_MAILBOX_KHR) {
-#ifdef SVKE_VERBOSE_DEVICE
+#ifdef SVKE_VERBOSE_PRESENT_MODE
         std::cout << "Present mode: Mailbox" << std::endl;
 #endif
         return available_present_mode;
       }
     }
 
-#ifdef SVKE_VERBOSE_DEVICE
+#ifdef SVKE_VERBOSE_PRESENT_MODE
     std::cout << "Present mode: V-Sync" << std::endl;
 #endif
     return VK_PRESENT_MODE_FIFO_KHR;

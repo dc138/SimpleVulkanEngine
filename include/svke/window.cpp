@@ -1,6 +1,7 @@
 #include "svke/window.hpp"
 
-#include <stdexcept>
+#include "defines.hpp"
+#include "pch.hpp"
 
 namespace svke {
   Window::Window(uint32_t width, uint32_t height, const std::string& win_name)

@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 
 #include <cstring>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <set>

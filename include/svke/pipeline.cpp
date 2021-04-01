@@ -2,11 +2,9 @@
 
 #include "pipeline.hpp"
 
-#include <fstream>
-#include <iostream>
-#include <stdexcept>
-
+#include "defines.hpp"
 #include "model.hpp"
+#include "pch.hpp"
 
 namespace svke {
   Pipeline::Pipeline(Device&               device,

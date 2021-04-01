@@ -1,6 +1,7 @@
 #ifndef SVKE_APPLICATION_HPP
 #define SVKE_APPLICATION_HPP
 
+#include "defines.hpp"
 #include "device.hpp"
 #include "model.hpp"
 #include "pch.hpp"
@@ -42,9 +43,9 @@ namespace svke {
     Device                       pDevice {pWindow};
     std::unique_ptr<SwapChain>   pSwapChain;
     std::unique_ptr<Pipeline>    pPipeline;
+    std::unique_ptr<Model>       pModel;
     VkPipelineLayout             pPipelineLayout;
     std::vector<VkCommandBuffer> pCommandBuffer;
-    std::unique_ptr<Model>       pModel;
   };
 }
 

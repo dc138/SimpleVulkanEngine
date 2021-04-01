@@ -1,6 +1,7 @@
 #ifndef SVKE_SWAP_CHAIN_HPP
 #define SVKE_SWAP_CHAIN_HPP
 
+#include "defines.hpp"
 #include "device.hpp"
 #include "pch.hpp"
 

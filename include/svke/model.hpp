@@ -1,6 +1,7 @@
 #ifndef SVKE_MODEL_HPP
 #define SVKE_MODEL_HPP
 
+#include "defines.hpp"
 #include "device.hpp"
 #include "pch.hpp"
 

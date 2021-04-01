@@ -14,7 +14,7 @@ SOURCE_DIR  := src/
 INCLUDE_DIR := include/
 SHADER_DIR  := shaders/
 
-TARGET   := svke
+TARGET   := svke-sample
 SRC      := $(shell find $(SOURCE_DIR) $(INCLUDE_DIR) -type f -iname "*.cpp")
 OBJECTS  := $(SRC:%.cpp=$(OBJECT_DIR)/%.o)
 PCH      := $(shell find $(INCLUDE_DIR) -type f -iwholename "*pch.hpp" | head -n 1)
