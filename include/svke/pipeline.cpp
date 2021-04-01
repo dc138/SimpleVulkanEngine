@@ -1,13 +1,17 @@
 #define UNUSED(x) (void(x))
 
-#include "svke/pipeline.hpp"
+#include "pipeline.hpp"
 
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 
+#include "model.hpp"
+
 namespace svke {
-  Pipeline::Pipeline(Device& device, const std::string& vertex_path, const std::string& fragment_path,
+  Pipeline::Pipeline(Device&               device,
+                     const std::string&    vertex_path,
+                     const std::string&    fragment_path,
                      const PipelineConfig& config)
       : pDevice {device} {
     auto vert_code = pReadFile(vertex_path);
@@ -34,13 +38,16 @@ namespace svke {
     shader_stages[1].pNext = nullptr;
     shader_stages[1].pSpecializationInfo = nullptr;
 
+    auto binding_descriptions = Model::Vertex::getBindings();
+    auto attribute_descriptions = Model::Vertex::getAtributes();
+
     VkPipelineVertexInputStateCreateInfo vertex_input_info {};
 
     vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertex_input_info.vertexAttributeDescriptionCount = 0;
-    vertex_input_info.vertexBindingDescriptionCount = 0;
-    vertex_input_info.pVertexAttributeDescriptions = nullptr;
-    vertex_input_info.pVertexBindingDescriptions = nullptr;
+    vertex_input_info.vertexAttributeDescriptionCount = static_cast<uint32_t>(attribute_descriptions.size());
+    vertex_input_info.vertexBindingDescriptionCount = static_cast<uint32_t>(binding_descriptions.size());
+    vertex_input_info.pVertexAttributeDescriptions = attribute_descriptions.data();
+    vertex_input_info.pVertexBindingDescriptions = binding_descriptions.data();
 
     VkPipelineViewportStateCreateInfo viewportInfo {};
 

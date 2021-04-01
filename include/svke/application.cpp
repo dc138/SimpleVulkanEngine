@@ -3,6 +3,29 @@
 namespace svke {
   Application::Application(uint32_t width, uint32_t height, const std::string& window_name)
       : pWidth {width}, pHeight {height}, pWindowName {window_name} {
+    pLoadModels();
+    pCreatePipelineLayout();
+    pCreatePipeline();
+    pCreateCommandBuffers();
+  }
+
+  Application::~Application() { vkDestroyPipelineLayout(pDevice.getDevice(), pPipelineLayout, nullptr); }
+
+  void Application::Run() {
+    while (!pWindow.ShouldClose()) {
+      glfwPollEvents();
+      pDrawFrame();
+    }
+
+    vkDeviceWaitIdle(pDevice.getDevice());
+  }
+
+  void Application::pLoadModels() {
+    std::vector<Model::Vertex> vertices {{{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
+    pModel = std::make_unique<Model>(pDevice, vertices);
+  }
+
+  void Application::pCreatePipelineLayout() {
     VkPipelineLayoutCreateInfo pipeline_layout_info {};
 
     pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -14,7 +37,9 @@ namespace svke {
     if (vkCreatePipelineLayout(pDevice.getDevice(), &pipeline_layout_info, nullptr, &pPipelineLayout) != VK_SUCCESS) {
       throw std::runtime_error("Failed to create pipeline layout");
     }
+  }
 
+  void Application::pCreatePipeline() {
     PipelineConfig pipeline_config {};
     Pipeline::DefaultPipelineConfig(pipeline_config, pSwapChain.getWidth(), pSwapChain.getHeight());
 
@@ -23,7 +48,9 @@ namespace svke {
 
     pPipeline =
         std::make_unique<Pipeline>(pDevice, "shaders/simple.vert.spv", "shaders/simple.frag.spv", pipeline_config);
+  }
 
+  void Application::pCreateCommandBuffers() {
     pCommandBuffer.resize(pSwapChain.getImageCount());
 
     VkCommandBufferAllocateInfo alloc_info {};
@@ -65,7 +92,8 @@ namespace svke {
       vkCmdBeginRenderPass(pCommandBuffer[i], &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
 
       pPipeline->Bind(pCommandBuffer[i]);
-      vkCmdDraw(pCommandBuffer[i], 3, 1, 0, 0);
+      pModel->Bind(pCommandBuffer[i]);
+      pModel->Draw(pCommandBuffer[i]);
 
       vkCmdEndRenderPass(pCommandBuffer[i]);
 
@@ -75,26 +103,18 @@ namespace svke {
     }
   }
 
-  Application::~Application() { vkDestroyPipelineLayout(pDevice.getDevice(), pPipelineLayout, nullptr); }
+  void Application::pDrawFrame() {
+    uint32_t image_index;
+    VkResult result = pSwapChain.AcquireNextImage(&image_index);
 
-  void Application::Run() {
-    while (!pWindow.ShouldClose()) {
-      glfwPollEvents();
-
-      uint32_t image_index;
-      VkResult result = pSwapChain.AcquireNextImage(&image_index);
-
-      if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-        throw std::runtime_error("Failed to acquire swap chain image");
-      }
-
-      result = pSwapChain.SubmitCommandBuffers(&pCommandBuffer[image_index], &image_index);
-
-      if (result != VK_SUCCESS) {
-        throw std::runtime_error("Failed to present swap chain image");
-      }
+    if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+      throw std::runtime_error("Failed to acquire swap chain image");
     }
 
-    vkDeviceWaitIdle(pDevice.getDevice());
+    result = pSwapChain.SubmitCommandBuffers(&pCommandBuffer[image_index], &image_index);
+
+    if (result != VK_SUCCESS) {
+      throw std::runtime_error("Failed to present swap chain image");
+    }
   }
 }

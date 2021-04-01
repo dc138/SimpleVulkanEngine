@@ -1,10 +1,8 @@
 #ifndef SVKE_PIPELINE_HPP
 #define SVKE_PIPELINE_HPP
 
-#include <string>
-#include <vector>
-
 #include "device.hpp"
+#include "pch.hpp"
 
 namespace svke {
   struct PipelineConfig {
@@ -26,7 +24,9 @@ namespace svke {
 
   class Pipeline {
    public:
-    Pipeline(Device& device, const std::string& vertex_path, const std::string& fragment_path,
+    Pipeline(Device&               device,
+             const std::string&    vertex_path,
+             const std::string&    fragment_path,
              const PipelineConfig& config);
     ~Pipeline();
 

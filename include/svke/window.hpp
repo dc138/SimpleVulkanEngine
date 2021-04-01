@@ -1,10 +1,7 @@
 #ifndef SVKE_WINDOW_HPP
 #define SVKE_WINDOW_HPP
 
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
-#include <string>
+#include "pch.hpp"
 
 namespace svke {
   class Window {

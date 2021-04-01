@@ -17,6 +17,8 @@ SHADER_DIR  := shaders/
 TARGET   := svke
 SRC      := $(shell find $(SOURCE_DIR) $(INCLUDE_DIR) -type f -iname "*.cpp")
 OBJECTS  := $(SRC:%.cpp=$(OBJECT_DIR)/%.o)
+PCH      := $(shell find $(INCLUDE_DIR) -type f -iwholename "*pch.hpp" | head -n 1)
+CPCH     := $(PCH:%.hpp=%.hpp.gch)
 
 FSHADERS  := $(shell find $(SHADER_DIR) -type f -iname "*.frag")
 FSPIRV    := $(FSHADERS:%.frag=$(BINARY_DIR)/%.frag.spv)
@@ -50,6 +52,10 @@ $(BINARY_DIR)/%.vert.spv: %.vert
 	@$(GLSLC) $< -o $@ \
 	  && echo -e "[\033[32mGLSLC\033[0m] \033[1m$^\033[0m -> \033[1m$@\033[0m"
 
+$(CPCH): $(PCH)
+	@$(CXX) $(CXXFLAGS) -I$(INCLUDE_DIR) -c $< -o $@ $(LDFLAGS) \
+	  && echo -e "[\033[32mCXX\033[0m] \033[1m$^\033[0m -> \033[1m$@\033[0m"
+
 debug_prepare:
 	@echo -e "[\033[34mINFO\033[0m] Doing a debug build"
 	$(eval CXXFLAGS += $(FLAGS_DEBUG))
@@ -58,8 +64,8 @@ release_prepare:
 	@echo -e "[\033[34mINFO\033[0m] Doing a release build"
 	$(eval CXXFLAGS += $(FLAGS_RELEASE))
 
-release: release_prepare $(BINARY_DIR)/$(TARGET) $(FSPIRV) $(VSPIRV)
-debug: debug_prepare $(BINARY_DIR)/$(TARGET) $(FSPIRV) $(VSPIRV)
+release: release_prepare $(CPCH) $(BINARY_DIR)/$(TARGET) $(FSPIRV) $(VSPIRV)
+debug: debug_prepare $(CPCH) $(BINARY_DIR)/$(TARGET) $(FSPIRV) $(VSPIRV)
 
 run:
 	@echo -e "[\033[34mRUN\033[0m] $(BINARY_DIR)/$(TARGET)"

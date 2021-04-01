@@ -1,12 +1,9 @@
 #ifndef SVKE_APPLICATION_HPP
 #define SVKE_APPLICATION_HPP
 
-#include <memory>
-#include <stdexcept>
-#include <string>
-#include <vector>
-
 #include "device.hpp"
+#include "model.hpp"
+#include "pch.hpp"
 #include "pipeline.hpp"
 #include "swap_chain.hpp"
 #include "window.hpp"
@@ -24,6 +21,13 @@ namespace svke {
     void Run();
 
    private:
+    void pLoadModels();
+    void pCreatePipelineLayout();
+    void pCreatePipeline();
+    void pCreateCommandBuffers();
+    void pDrawFrame();
+
+   private:
     uint32_t    pWidth;
     uint32_t    pHeight;
     std::string pWindowName;
@@ -35,6 +39,7 @@ namespace svke {
     std::unique_ptr<Pipeline>    pPipeline;
     VkPipelineLayout             pPipelineLayout;
     std::vector<VkCommandBuffer> pCommandBuffer;
+    std::unique_ptr<Model>       pModel;
   };
 }
 

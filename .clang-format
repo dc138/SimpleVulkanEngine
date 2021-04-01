@@ -6,3 +6,5 @@ FixNamespaceComments: false
 #IndentPPDirectives: AfterHash
 PointerAlignment: Left
 AlignConsecutiveDeclarations: true
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: false

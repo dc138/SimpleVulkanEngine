@@ -1,12 +1,8 @@
 #ifndef SVKE_SWAP_CHAIN_HPP
 #define SVKE_SWAP_CHAIN_HPP
 
-#include <vulkan/vulkan.h>
-
-#include <string>
-#include <vector>
-
 #include "device.hpp"
+#include "pch.hpp"
 
 #define MAX_FRAMES_IN_FLIGHT 2
 

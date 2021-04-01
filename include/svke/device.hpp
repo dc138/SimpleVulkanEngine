@@ -1,9 +1,7 @@
 #ifndef SVKE_DEVICE_HPP
 #define SVKE_DEVICE_HPP
 
-#include <string>
-#include <vector>
-
+#include "pch.hpp"
 #include "window.hpp"
 
 namespace svke {
@@ -42,19 +40,25 @@ namespace svke {
     SwapChainSupportDetails getSwapChainSupport() { return pQuerySwapChainSupport(pPhysicalDevice); }
     uint32_t                FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
     QueueFamilyIndices      FindPhysicalQueueFamilies() { return pFindQueueFamilies(pPhysicalDevice); }
-    VkFormat                FindSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
-                                                VkFormatFeatureFlags features);
+    VkFormat                FindSupportedFormat(const std::vector<VkFormat> &candidates,
+                                                VkImageTiling                tiling,
+                                                VkFormatFeatureFlags         features);
 
    public:
-    void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer,
-                      VkDeviceMemory &buffer_memory);
+    void            CreateBuffer(VkDeviceSize          size,
+                                 VkBufferUsageFlags    usage,
+                                 VkMemoryPropertyFlags properties,
+                                 VkBuffer &            buffer,
+                                 VkDeviceMemory &      buffer_memory);
     VkCommandBuffer BeginSingleTimeCommands();
     void            EndSingleTimeCommands(VkCommandBuffer command_buffer);
     void            CopyBuffer(VkBuffer src_buffer, VkBuffer dst_uffer, VkDeviceSize size);
     void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layer_count);
 
-    void CreateImageWithInfo(const VkImageCreateInfo &image_info, VkMemoryPropertyFlags properties, VkImage &image,
-                             VkDeviceMemory &image_memory);
+    void CreateImageWithInfo(const VkImageCreateInfo &image_info,
+                             VkMemoryPropertyFlags    properties,
+                             VkImage &                image,
+                             VkDeviceMemory &         image_memory);
 
     VkPhysicalDeviceProperties properties;
 

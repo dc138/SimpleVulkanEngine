@@ -6,10 +6,7 @@
 
 #include "device.hpp"
 
-#include <cstring>
-#include <iostream>
-#include <set>
-#include <unordered_set>
+#include "pch.hpp"
 
 namespace svke {
   static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      message_severity,
@@ -24,9 +21,10 @@ namespace svke {
     return VK_FALSE;
   }
 
-  VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *create_info,
-                                        const VkAllocationCallbacks *allocator,
-                                        VkDebugUtilsMessengerEXT *   debug_messenger) {
+  VkResult CreateDebugUtilsMessengerEXT(VkInstance                                instance,
+                                        const VkDebugUtilsMessengerCreateInfoEXT *create_info,
+                                        const VkAllocationCallbacks *             allocator,
+                                        VkDebugUtilsMessengerEXT *                debug_messenger) {
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
 
     if (func != nullptr) {
@@ -37,7 +35,8 @@ namespace svke {
     }
   }
 
-  void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger,
+  void DestroyDebugUtilsMessengerEXT(VkInstance                   instance,
+                                     VkDebugUtilsMessengerEXT     debug_messenger,
                                      const VkAllocationCallbacks *allocator) {
     auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
 
@@ -390,8 +389,9 @@ namespace svke {
     return details;
   }
 
-  VkFormat Device::FindSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
-                                       VkFormatFeatureFlags features) {
+  VkFormat Device::FindSupportedFormat(const std::vector<VkFormat> &candidates,
+                                       VkImageTiling                tiling,
+                                       VkFormatFeatureFlags         features) {
     for (VkFormat format : candidates) {
       VkFormatProperties props;
       vkGetPhysicalDeviceFormatProperties(pPhysicalDevice, format, &props);
@@ -417,8 +417,11 @@ namespace svke {
     throw std::runtime_error("Failed to find suitable memory type");
   }
 
-  void Device::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
-                            VkBuffer &buffer, VkDeviceMemory &bufferMemory) {
+  void Device::CreateBuffer(VkDeviceSize          size,
+                            VkBufferUsageFlags    usage,
+                            VkMemoryPropertyFlags properties,
+                            VkBuffer &            buffer,
+                            VkDeviceMemory &      bufferMemory) {
     VkBufferCreateInfo bufferInfo {};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bufferInfo.size = size;
@@ -488,7 +491,10 @@ namespace svke {
     EndSingleTimeCommands(command_buffer);
   }
 
-  void Device::CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height,
+  void Device::CopyBufferToImage(VkBuffer buffer,
+                                 VkImage  image,
+                                 uint32_t width,
+                                 uint32_t height,
                                  uint32_t layer_count) {
     VkCommandBuffer command_buffer = BeginSingleTimeCommands();
 
@@ -509,8 +515,10 @@ namespace svke {
     EndSingleTimeCommands(command_buffer);
   }
 
-  void Device::CreateImageWithInfo(const VkImageCreateInfo &imageInfo, VkMemoryPropertyFlags properties, VkImage &image,
-                                   VkDeviceMemory &imageMemory) {
+  void Device::CreateImageWithInfo(const VkImageCreateInfo &imageInfo,
+                                   VkMemoryPropertyFlags    properties,
+                                   VkImage &                image,
+                                   VkDeviceMemory &         imageMemory) {
     if (vkCreateImage(pDevice, &imageInfo, nullptr, &image) != VK_SUCCESS) {
       throw std::runtime_error("Failed to create image");
     }
