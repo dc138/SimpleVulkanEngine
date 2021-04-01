@@ -25,7 +25,12 @@ namespace svke {
     void pCreatePipelineLayout();
     void pCreatePipeline();
     void pCreateCommandBuffers();
+    void pFreeCommandBuffers();
     void pDrawFrame();
+
+   private:
+    void pRecreateSwapChain();
+    void pRecordCommandBuffer(uint32_t image_index);
 
    private:
     uint32_t    pWidth;
@@ -35,7 +40,7 @@ namespace svke {
    private:
     Window                       pWindow {pWidth, pHeight, pWindowName};
     Device                       pDevice {pWindow};
-    SwapChain                    pSwapChain {pDevice, pWindow.getExtent()};
+    std::unique_ptr<SwapChain>   pSwapChain;
     std::unique_ptr<Pipeline>    pPipeline;
     VkPipelineLayout             pPipelineLayout;
     std::vector<VkCommandBuffer> pCommandBuffer;

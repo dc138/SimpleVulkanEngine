@@ -10,6 +10,7 @@ namespace svke {
   class SwapChain {
    public:
     SwapChain(Device &device, VkExtent2D window_extent);
+    SwapChain(Device &device, VkExtent2D window_extent, std::shared_ptr<SwapChain> previous);
     ~SwapChain();
 
     SwapChain(const SwapChain &other) = delete;
@@ -36,6 +37,7 @@ namespace svke {
     VkResult SubmitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *image_index);
 
    private:
+    void pInitSwapChain();
     void pCreateSwapChain();
     void pCreateImageViews();
     void pCreateDepthResources();
@@ -64,9 +66,10 @@ namespace svke {
     std::vector<VkImageView>    pSwapChainImageViews;
 
    private:
-    Device &       pDevice;
-    VkExtent2D     pWindowExtent;
-    VkSwapchainKHR pSwapChain;
+    Device &                   pDevice;
+    VkExtent2D                 pWindowExtent;
+    VkSwapchainKHR             pSwapChain;
+    std::shared_ptr<SwapChain> pOldSwapChain;
 
    private:
     std::vector<VkSemaphore> pImageAvailableSemaphores;

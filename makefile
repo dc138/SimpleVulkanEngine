@@ -1,8 +1,8 @@
 CXX      := g++
-CXXFLAGS := -pedantic-errors -Wall -Wextra -Werror -std=c++17
+CXXFLAGS := -pedantic-errors -Wall -Wextra -std=c++17
 LDFLAGS  := -L/usr/lib -lstdc++ -lglfw -lrt -lm -ldl -lvulkan
 
-FLAGS_RELEASE := -Ofast -flto
+FLAGS_RELEASE := -Ofast -flto -Werror
 FLAGS_DEBUG   := -O0 -g -DNDEBUG
 
 GLSLC := glslc

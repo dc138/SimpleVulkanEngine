@@ -9,8 +9,7 @@ namespace svke {
     PipelineConfig(const PipelineConfig&) = delete;
     PipelineConfig& operator=(const PipelineConfig&) = delete;
 
-    VkViewport                             viewport;
-    VkRect2D                               scissor;
+    VkPipelineViewportStateCreateInfo      create_info;
     VkPipelineInputAssemblyStateCreateInfo input_assembly_info;
     VkPipelineRasterizationStateCreateInfo rasterization_info;
     VkPipelineMultisampleStateCreateInfo   multisample_info;
@@ -20,6 +19,8 @@ namespace svke {
     VkPipelineLayout                       pipeline_layout = nullptr;
     VkRenderPass                           render_pass     = nullptr;
     uint32_t                               subpass         = 0;
+    std::vector<VkDynamicState>            dynamic_state_enables;
+    VkPipelineDynamicStateCreateInfo       dynamic_state_info;
   };
 
   class Pipeline {
@@ -35,7 +36,7 @@ namespace svke {
 
     void Bind(VkCommandBuffer command_buffer);
 
-    static void DefaultPipelineConfig(PipelineConfig& config, uint32_t width, uint32_t height);
+    static void DefaultPipelineConfig(PipelineConfig& config);
 
    private:
     static std::vector<char> pReadFile(const std::string& path);

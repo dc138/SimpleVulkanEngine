@@ -15,8 +15,9 @@ namespace svke {
     bool ShouldClose();
     void PollEvents();
 
-    VkExtent2D getExtent() { return {pWidth, pHeight}; }
-    bool       WasWindowResized() { return pFrameBufferResized; }
+    VkExtent2D getExtent() { return {static_cast<uint32_t>(pWidth), static_cast<uint32_t>(pHeight)}; }
+    bool       WasResized() { return pFrameBufferResized; }
+    void       ResetResize() { pFrameBufferResized = false; }
 
     friend class Device;
 
@@ -25,7 +26,7 @@ namespace svke {
     void pCreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
    private:
-    static void pFramebufferResizeCallback(GLFWwindow* window, uint32_t width, uint32_t height);
+    static void pFramebufferResizeCallback(GLFWwindow* window, int32_t width, int32_t height);
 
    private:
     uint32_t pWidth;

@@ -49,14 +49,6 @@ namespace svke {
     vertex_input_info.pVertexAttributeDescriptions    = attribute_descriptions.data();
     vertex_input_info.pVertexBindingDescriptions      = binding_descriptions.data();
 
-    VkPipelineViewportStateCreateInfo viewportInfo {};
-
-    viewportInfo.sType         = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-    viewportInfo.viewportCount = 1;
-    viewportInfo.pViewports    = &config.viewport;
-    viewportInfo.scissorCount  = 1;
-    viewportInfo.pScissors     = &config.scissor;
-
     VkGraphicsPipelineCreateInfo pipeline_info {};
 
     pipeline_info.sType               = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -64,11 +56,11 @@ namespace svke {
     pipeline_info.pStages             = shader_stages;
     pipeline_info.pVertexInputState   = &vertex_input_info;
     pipeline_info.pInputAssemblyState = &config.input_assembly_info;
-    pipeline_info.pViewportState      = &viewportInfo;
+    pipeline_info.pViewportState      = &config.create_info;
     pipeline_info.pRasterizationState = &config.rasterization_info;
     pipeline_info.pMultisampleState   = &config.multisample_info;
     pipeline_info.pColorBlendState    = &config.colorblend_info;
-    pipeline_info.pDynamicState       = nullptr;  // Optional
+    pipeline_info.pDynamicState       = &config.dynamic_state_info;
     pipeline_info.pDepthStencilState  = &config.depth_stencil_info;
 
     pipeline_info.layout     = config.pipeline_layout;
@@ -94,20 +86,16 @@ namespace svke {
     vkCmdBindPipeline(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pGraphicsPipeline);
   }
 
-  void Pipeline::DefaultPipelineConfig(PipelineConfig& config, uint32_t width, uint32_t height) {
+  void Pipeline::DefaultPipelineConfig(PipelineConfig& config) {
     config.input_assembly_info.sType                  = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
     config.input_assembly_info.topology               = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     config.input_assembly_info.primitiveRestartEnable = VK_FALSE;
 
-    config.viewport.x        = 0.0f;
-    config.viewport.y        = 0.0f;
-    config.viewport.width    = static_cast<float>(width);
-    config.viewport.height   = static_cast<float>(height);
-    config.viewport.minDepth = 0.0f;
-    config.viewport.maxDepth = 1.0f;
-
-    config.scissor.offset = {0, 0};
-    config.scissor.extent = {width, height};
+    config.create_info.sType         = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    config.create_info.viewportCount = 1;
+    config.create_info.pViewports    = nullptr;
+    config.create_info.scissorCount  = 1;
+    config.create_info.pScissors     = nullptr;
 
     config.rasterization_info.sType                   = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     config.rasterization_info.depthClampEnable        = VK_FALSE;
@@ -159,6 +147,12 @@ namespace svke {
     config.depth_stencil_info.stencilTestEnable     = VK_FALSE;
     config.depth_stencil_info.front                 = {};  // Optional
     config.depth_stencil_info.back                  = {};  // Optional
+
+    config.dynamic_state_enables                = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
+    config.dynamic_state_info.sType             = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    config.dynamic_state_info.pDynamicStates    = config.dynamic_state_enables.data();
+    config.dynamic_state_info.dynamicStateCount = static_cast<uint32_t>(config.dynamic_state_enables.size());
+    config.dynamic_state_info.flags             = 0;
   }
 
   std::vector<char> Pipeline::pReadFile(const std::string& path) {
