@@ -1,4 +1,4 @@
-#if defined(NDEBUG) || defined(_DEBUG)
+#if !defined(NDEBUG) || defined(_DEBUG)
 #  define SVKE_DEBUG
 #  define SVKE_VERBOSE_PRESENT_MODE
 #  define SVKE_VERBOSE_DEVICE_INFO

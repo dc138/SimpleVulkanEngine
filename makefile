@@ -2,8 +2,8 @@ CXX      := g++
 CXXFLAGS := -pedantic-errors -Wall -Wextra -std=c++17
 LDFLAGS  := -L/usr/lib -lstdc++ -lglfw -lrt -lm -ldl -lvulkan
 
-FLAGS_RELEASE := -Ofast -flto -Werror
-FLAGS_DEBUG   := -O0 -g -DNDEBUG
+FLAGS_RELEASE := -Ofast -flto -Werror -DNDEBUG
+FLAGS_DEBUG   := -O0 -g -D_DEBUG
 
 GLSLC := glslc
 
@@ -25,6 +25,7 @@ FSPIRV    := $(FSHADERS:%.frag=$(BINARY_DIR)/%.frag.spv)
 VSHADERS  := $(shell find $(SHADER_DIR) -type f -iname "*.vert")
 VSPIRV    := $(VSHADERS:%.vert=$(BINARY_DIR)/%.vert.spv)
 
+.NOTPARALLEL:
 .PHONY: all clean debug release run
 all: release
 
@@ -56,18 +57,20 @@ $(CPCH): $(PCH)
 	@$(CXX) $(CXXFLAGS) -I$(INCLUDE_DIR) -c $< -o $@ $(LDFLAGS) \
 	  && echo -e "[\033[32mCXX\033[0m] \033[1m$^\033[0m -> \033[1m$@\033[0m"
 
-debug_prepare:
+internal_debug_prep:
 	@echo -e "[\033[34mINFO\033[0m] Doing a debug build"
 	$(eval CXXFLAGS += $(FLAGS_DEBUG))
 
-release_prepare:
+internal_release_prep:
 	@echo -e "[\033[34mINFO\033[0m] Doing a release build"
 	$(eval CXXFLAGS += $(FLAGS_RELEASE))
 
-release: release_prepare $(CPCH) $(BINARY_DIR)/$(TARGET) $(FSPIRV) $(VSPIRV)
-debug: debug_prepare $(CPCH) $(BINARY_DIR)/$(TARGET) $(FSPIRV) $(VSPIRV)
+internal_perform_build: $(CPCH) $(BINARY_DIR)/$(TARGET) $(FSPIRV) $(VSPIRV)
 
-run:
+release: internal_release_prep internal_perform_build
+debug: internal_debug_prep internal_perform_build
+
+run: release
 	@echo -e "[\033[34mRUN\033[0m] $(BINARY_DIR)/$(TARGET)"
 	@cd $(BINARY_DIR); ./$(TARGET)
 
