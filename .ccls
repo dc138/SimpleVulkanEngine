@@ -1,0 +1,13 @@
+gcc
+-pedantic-errors
+-Wall
+-Wextra
+-std=c++17
+-L/usr/lib
+-lstdc++
+-lglfw
+-lrt
+-lm
+-ldl
+-lvulkan
+-Iinclude/

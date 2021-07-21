@@ -70,7 +70,7 @@ internal_perform_build: $(CPCH) $(BINARY_DIR)/$(TARGET) $(FSPIRV) $(VSPIRV)
 release: internal_release_prep internal_perform_build
 debug: internal_debug_prep internal_perform_build
 
-run: release
+run: 
 	@echo -e "[\033[34mRUN\033[0m] $(BINARY_DIR)/$(TARGET)"
 	@cd $(BINARY_DIR); ./$(TARGET)
 
