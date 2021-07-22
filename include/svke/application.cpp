@@ -27,11 +27,9 @@ namespace svke {
   Application::Application(uint32_t width, uint32_t height, const std::string &window_name)
       : pWidth {width}, pHeight {height}, pWindowName {window_name} {
     pLoadGameObjects();
-    pCreatePipelineLayout();
-    pCreatePipeline();
   }
 
-  Application::~Application() { vkDestroyPipelineLayout(pDevice.getDevice(), pPipelineLayout, nullptr); }
+  Application::~Application() {}
 
   void Application::Run() {
     while (!pWindow.ShouldClose()) {
@@ -39,7 +37,7 @@ namespace svke {
 
       if (auto command_buffer = pRenderer.uBeginFrame()) {
         pRenderer.uBeginSwapChainRenderPass(command_buffer);
-        pRenderGameObjects(command_buffer);
+        pSimpleRenderSystem.uRenderGameObjects(command_buffer, pGameObjects);
         pRenderer.uEndSwapChainRenderPass(command_buffer);
         pRenderer.uEndFrame();
       }
@@ -68,58 +66,4 @@ namespace svke {
 
     pGameObjects.push_back(std::move(triangle));
   }
-
-  void Application::pCreatePipelineLayout() {
-    VkPushConstantRange push_constant_range {};
-
-    push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-    push_constant_range.offset     = 0;
-    push_constant_range.size       = sizeof(TestPushConstantData);
-
-    VkPipelineLayoutCreateInfo pipeline_layout_info {};
-
-    pipeline_layout_info.sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipeline_layout_info.setLayoutCount         = 0;
-    pipeline_layout_info.pSetLayouts            = nullptr;
-    pipeline_layout_info.pushConstantRangeCount = 1;
-    pipeline_layout_info.pPushConstantRanges    = &push_constant_range;
-
-    if (vkCreatePipelineLayout(pDevice.getDevice(), &pipeline_layout_info, nullptr, &pPipelineLayout) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to create pipeline layout");
-    }
-  }
-
-  void Application::pCreatePipeline() {
-    assert(pPipelineLayout != nullptr && "Cannot create pipeline before pipeline layout");
-
-    PipelineConfig pipeline_config {};
-    Pipeline::DefaultPipelineConfig(pipeline_config);
-
-    pipeline_config.render_pass     = pRenderer.getSwapChainRenderPass();
-    pipeline_config.pipeline_layout = pPipelineLayout;
-
-    pPipeline =
-        std::make_unique<Pipeline>(pDevice, "shaders/simple.vert.spv", "shaders/simple.frag.spv", pipeline_config);
-  }
-
-  void Application::pRenderGameObjects(VkCommandBuffer command_buffer) {
-    pPipeline->Bind(command_buffer);
-
-    for (auto &object : pGameObjects) {
-      TestPushConstantData push {};
-
-      push.offset    = object.uTransform2d.translation;
-      push.transform = object.uTransform2d.getMat2();
-
-      vkCmdPushConstants(command_buffer,
-                         pPipelineLayout,
-                         VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-                         0,
-                         sizeof(TestPushConstantData),
-                         &push);
-
-      object.uModel->Bind(command_buffer);
-      object.uModel->Draw(command_buffer);
-    }
-  }
-}  // namespace svke
+}
