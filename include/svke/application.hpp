@@ -6,7 +6,7 @@
 #include "game_object.hpp"
 #include "pch.hpp"
 #include "pipeline.hpp"
-#include "swap_chain.hpp"
+#include "renderer.hpp"
 #include "window.hpp"
 
 namespace svke {
@@ -30,14 +30,7 @@ namespace svke {
     void pLoadGameObjects();
     void pCreatePipelineLayout();
     void pCreatePipeline();
-    void pCreateCommandBuffers();
-    void pFreeCommandBuffers();
-    void pDrawFrame();
     void pRenderGameObjects(VkCommandBuffer command_buffer);
-
-   private:
-    void pRecreateSwapChain();
-    void pRecordCommandBuffer(uint32_t image_index);
 
    private:
     uint32_t    pWidth;
@@ -45,14 +38,13 @@ namespace svke {
     std::string pWindowName;
 
    private:
-    Window                       pWindow {pWidth, pHeight, pWindowName};
-    Device                       pDevice {pWindow};
-    std::unique_ptr<SwapChain>   pSwapChain;
-    std::unique_ptr<Pipeline>    pPipeline;
-    std::vector<GameObject>      pGameObjects;
-    VkPipelineLayout             pPipelineLayout;
-    std::vector<VkCommandBuffer> pCommandBuffer;
+    Window                    pWindow {pWidth, pHeight, pWindowName};
+    Device                    pDevice {pWindow};
+    Renderer                  pRenderer {pWindow, pDevice};
+    std::unique_ptr<Pipeline> pPipeline;
+    std::vector<GameObject>   pGameObjects;
+    VkPipelineLayout          pPipelineLayout;
   };
-}  // namespace svke
+}
 
 #endif

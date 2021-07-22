@@ -3,6 +3,7 @@
 
 #include <vulkan/vulkan.h>
 
+#include <cassert>
 #include <cstring>
 #include <fstream>
 #include <iostream>
