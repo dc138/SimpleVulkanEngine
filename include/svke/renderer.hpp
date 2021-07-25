@@ -17,7 +17,7 @@ namespace svke {
     Renderer &operator=(const Renderer &other) = delete;
 
    public:
-    bool         uIsFrameInProgress() const { return pIsFrameStarted; }
+    bool         isFrameInProgress() const { return pIsFrameStarted; }
     VkRenderPass getSwapChainRenderPass() const { return pSwapChain->getRenderPass(); }
 
     VkCommandBuffer getCurrentCommandBuffer() {
@@ -26,10 +26,10 @@ namespace svke {
     };
 
    public:
-    VkCommandBuffer uBeginFrame();
-    void            uEndFrame();
-    void            uBeginSwapChainRenderPass(VkCommandBuffer command_buffer);
-    void            uEndSwapChainRenderPass(VkCommandBuffer command_buffer);
+    VkCommandBuffer BeginFrame();
+    void            EndFrame();
+    void            BeginSwapChainRenderPass(VkCommandBuffer command_buffer);
+    void            EndSwapChainRenderPass(VkCommandBuffer command_buffer);
 
    private:
     void pCreateCommandBuffers();

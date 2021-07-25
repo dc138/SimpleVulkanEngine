@@ -41,8 +41,8 @@ namespace svke {
     GameObject &operator=(GameObject &&) = default;
 
    public:
-    std::shared_ptr<Model> uModel {};
-    Transform2d            uTransform2d {};
+    std::shared_ptr<Model> ObjectModel {};
+    Transform2d            ObjectTransform2d {};
 
    private:
     GameObject(id_t id) : pId {id} {};

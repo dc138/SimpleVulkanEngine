@@ -35,11 +35,11 @@ namespace svke {
     while (!pWindow.ShouldClose()) {
       glfwPollEvents();
 
-      if (auto command_buffer = pRenderer.uBeginFrame()) {
-        pRenderer.uBeginSwapChainRenderPass(command_buffer);
-        pSimpleRenderSystem.uRenderGameObjects(command_buffer, pGameObjects);
-        pRenderer.uEndSwapChainRenderPass(command_buffer);
-        pRenderer.uEndFrame();
+      if (auto command_buffer = pRenderer.BeginFrame()) {
+        pRenderer.BeginSwapChainRenderPass(command_buffer);
+        pSimpleRenderSystem.RenderGameObjects(command_buffer, pGameObjects);
+        pRenderer.EndSwapChainRenderPass(command_buffer);
+        pRenderer.EndFrame();
       }
     }
 
@@ -57,12 +57,12 @@ namespace svke {
 
     auto model = std::make_shared<Model>(pDevice, vertices);
 
-    auto triangle                       = GameObject::CreateGameObject();
-    triangle.uModel                     = model;
-    triangle.uTransform2d.translation.x = .2f;
-    triangle.uTransform2d.translation.y = -.3f;
-    triangle.uTransform2d.scale         = {.5f, 1.5f};
-    triangle.uTransform2d.rotation      = .25f * glm::two_pi<float>();
+    auto triangle                            = GameObject::CreateGameObject();
+    triangle.ObjectModel                     = model;
+    triangle.ObjectTransform2d.translation.x = .2f;
+    triangle.ObjectTransform2d.translation.y = -.3f;
+    triangle.ObjectTransform2d.scale         = {.5f, 1.5f};
+    triangle.ObjectTransform2d.rotation      = .25f * glm::two_pi<float>();
 
     pGameObjects.push_back(std::move(triangle));
   }

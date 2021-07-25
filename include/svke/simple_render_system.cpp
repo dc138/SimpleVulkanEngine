@@ -43,14 +43,14 @@ namespace svke {
         std::make_unique<Pipeline>(pDevice, "shaders/simple.vert.spv", "shaders/simple.frag.spv", pipeline_config);
   }
 
-  void SimpleRenderSystem::uRenderGameObjects(VkCommandBuffer command_buffer, std::vector<GameObject>& game_objects) {
+  void SimpleRenderSystem::RenderGameObjects(VkCommandBuffer command_buffer, std::vector<GameObject>& game_objects) {
     pPipeline->Bind(command_buffer);
 
     for (auto& object : game_objects) {
       PushConstantData push {};
 
-      push.offset    = object.uTransform2d.translation;
-      push.transform = object.uTransform2d.getMat2();
+      push.offset    = object.ObjectTransform2d.translation;
+      push.transform = object.ObjectTransform2d.getMat2();
 
       vkCmdPushConstants(command_buffer,
                          pPipelineLayout,
@@ -59,8 +59,8 @@ namespace svke {
                          sizeof(PushConstantData),
                          &push);
 
-      object.uModel->Bind(command_buffer);
-      object.uModel->Draw(command_buffer);
+      object.ObjectModel->Bind(command_buffer);
+      object.ObjectModel->Draw(command_buffer);
     }
   }
 }  // namespace svke

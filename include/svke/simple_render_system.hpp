@@ -26,7 +26,7 @@ namespace svke {
     void pCreatePipeline(VkRenderPass render_pass);
 
    public:
-    void uRenderGameObjects(VkCommandBuffer command_buffer, std::vector<GameObject> &game_objects);
+    void RenderGameObjects(VkCommandBuffer command_buffer, std::vector<GameObject> &game_objects);
 
    private:
     Device &                  pDevice;

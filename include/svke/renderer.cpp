@@ -57,7 +57,7 @@ namespace svke {
     // COME BACK HERE
   }
 
-  VkCommandBuffer Renderer::uBeginFrame() {
+  VkCommandBuffer Renderer::BeginFrame() {
     assert(!pIsFrameStarted && "Cannot begin frame with one already in progress");
 
     VkResult result = pSwapChain->AcquireNextImage(&pCurrentImageIndex);
@@ -83,7 +83,7 @@ namespace svke {
     return pCommandBuffer[pCurrentImageIndex];
   }
 
-  void Renderer::uEndFrame() {
+  void Renderer::EndFrame() {
     assert(pIsFrameStarted && "Cannot end a frame without one being started");
 
     if (vkEndCommandBuffer(pCommandBuffer[pCurrentImageIndex]) != VK_SUCCESS) {
@@ -102,7 +102,7 @@ namespace svke {
     pIsFrameStarted = false;
   }
 
-  void Renderer::uBeginSwapChainRenderPass(VkCommandBuffer command_buffer) {
+  void Renderer::BeginSwapChainRenderPass(VkCommandBuffer command_buffer) {
     assert(pIsFrameStarted && "Cannot begin a swapchain render pass when no frame is in progress");
     assert(command_buffer == pCommandBuffer[pCurrentImageIndex] &&
            "Cannot begin swapchain render pass on commadn buffer of a different frame");
@@ -143,7 +143,7 @@ namespace svke {
     vkCmdSetScissor(command_buffer, 0, 1, &scissor);
   }
 
-  void Renderer::uEndSwapChainRenderPass(VkCommandBuffer command_buffer) {
+  void Renderer::EndSwapChainRenderPass(VkCommandBuffer command_buffer) {
     assert(pIsFrameStarted && "Cannot end a swapchain render pass when no frame is in progress");
     assert(command_buffer == pCommandBuffer[pCurrentImageIndex] &&
            "Cannot end swapchain render pass on commadn buffer of a different frame");
