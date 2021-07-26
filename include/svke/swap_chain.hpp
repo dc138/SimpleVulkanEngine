@@ -32,6 +32,11 @@ namespace svke {
       return static_cast<float>(pSwapChainExtent.width) / static_cast<float>(pSwapChainExtent.height);
     }
 
+    bool CompareSwapFormats(const SwapChain &swap_chain) const {
+      return pSwapChainDepthFormat == swap_chain.pSwapChainDepthFormat &&
+             pSwapChainImageFormat == swap_chain.pSwapChainImageFormat;
+    }
+
    public:
     VkFormat FindDepthFormat();
     VkResult AcquireNextImage(uint32_t *image_index);
@@ -53,6 +58,7 @@ namespace svke {
 
    private:
     VkFormat   pSwapChainImageFormat;
+    VkFormat   pSwapChainDepthFormat;
     VkExtent2D pSwapChainExtent;
 
    private:

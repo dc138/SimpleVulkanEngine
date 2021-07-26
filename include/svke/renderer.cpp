@@ -46,7 +46,12 @@ namespace svke {
     if (pSwapChain == nullptr) {
       pSwapChain = std::make_unique<SwapChain>(pDevice, extent);
     } else {
-      pSwapChain = std::make_unique<SwapChain>(pDevice, extent, std::move(pSwapChain));
+      std::shared_ptr<SwapChain> old_swapchain = std::move(pSwapChain);
+      pSwapChain                               = std::make_unique<SwapChain>(pDevice, extent, old_swapchain);
+
+      if (!old_swapchain->CompareSwapFormats(*pSwapChain.get())) {
+        throw std::runtime_error("Swapchain image or depth format has changed");
+      }
 
       if (pSwapChain->getImageCount() != pCommandBuffer.size()) {
         pFreeCommandBuffers();

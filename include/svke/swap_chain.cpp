@@ -330,6 +330,8 @@ namespace svke {
       view_info.subresourceRange.baseArrayLayer = 0;
       view_info.subresourceRange.layerCount     = 1;
 
+      pSwapChainDepthFormat = depthFormat;
+
       if (vkCreateImageView(pDevice.getDevice(), &view_info, nullptr, &pDepthImageViews[i]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create texture image view");
       }
