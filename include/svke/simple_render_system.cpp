@@ -47,10 +47,12 @@ namespace svke {
     pPipeline->Bind(command_buffer);
 
     for (auto& object : game_objects) {
+      object.Transform.rotation.y = glm::mod(object.Transform.rotation.y + 0.001f, glm::two_pi<float>());
+      object.Transform.rotation.x = glm::mod(object.Transform.rotation.x + 0.0005f, glm::two_pi<float>());
+
       PushConstantData push {};
 
-      push.offset    = object.ObjectTransform2d.translation;
-      push.transform = object.ObjectTransform2d.getMat2();
+      push.transform = object.Transform.matrix();
 
       vkCmdPushConstants(command_buffer,
                          pPipelineLayout,

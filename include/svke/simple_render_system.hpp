@@ -9,8 +9,7 @@
 
 namespace svke {
   struct PushConstantData {
-    glm::mat2 transform {1.0f};
-    glm::vec2 offset {0.0f, 0.0f};
+    glm::mat4 transform {1.0f};
   };
 
   class SimpleRenderSystem {

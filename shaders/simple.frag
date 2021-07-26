@@ -1,14 +1,11 @@
 #version 450
 
-layout (location = 0) in vec3 in_color;
+layout(location = 0) in vec3 in_color;
 
-layout (location = 0) out vec4 out_color;
+layout(location = 0) out vec4 out_color;
 
-layout (push_constant) uniform PushData {
-  mat2 transform;
-  vec2 offset;
+layout(push_constant) uniform PushData { 
+  mat4 transform; 
 } push_data;
 
-void main() {
-  out_color = vec4(in_color, 1.0f);
-}
+void main() { out_color = vec4(in_color, 1.0f); }

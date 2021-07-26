@@ -6,19 +6,21 @@
 #include "pch.hpp"
 
 namespace svke {
-  struct Transform2d {
-    glm::vec2 translation {0.0f, 0.0f};
-    glm::vec2 scale {1.0f, 1.0f};
-    float     rotation = 0.0f;
+  struct TransformComponent {
+    glm::vec3 translation {};
+    glm::vec3 scale {};
+    glm::vec3 rotation {};
 
-    glm::mat2 getMat2() {
-      const float s = std::sin(rotation);
-      const float c = std::cos(rotation);
+    glm::mat4 matrix() {
+      glm::mat4 transform {1.0f};
 
-      glm::mat2 rotation_matrix {{c, s}, {-s, c}};
-      glm::mat2 scale_matrix {{scale.x, 0.0f}, {0.0f, scale.y}};
+      transform = glm::translate(transform, translation);
+      transform = glm::rotate(transform, rotation.y, {0.0f, 1.0f, 0.0f});
+      transform = glm::rotate(transform, rotation.x, {1.0f, 0.0f, 0.0f});
+      transform = glm::rotate(transform, rotation.z, {0.0f, 0.0f, 1.0f});
+      transform = glm::scale(transform, scale);
 
-      return rotation_matrix * scale_matrix;
+      return transform;
     }
   };
 
@@ -42,7 +44,7 @@ namespace svke {
 
    public:
     std::shared_ptr<Model> ObjectModel {};
-    Transform2d            ObjectTransform2d {};
+    TransformComponent     Transform {};
 
    private:
     GameObject(id_t id) : pId {id} {};

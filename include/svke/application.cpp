@@ -2,29 +2,67 @@
 #include "defines.hpp"
 #include "pch.hpp"
 
-void sierpinski(std::vector<svke::Model::Vertex> &vertices,
-                uint8_t                           depth,
-                svke::Model::Vertex               top,
-                svke::Model::Vertex               left,
-                svke::Model::Vertex               right) {
-  if (depth <= 0) {
-    vertices.push_back(top);
-    vertices.push_back(right);
-    vertices.push_back(left);
+std::unique_ptr<svke::Model> CreateCubeModel(svke::Device& device, glm::vec3 offset) {
+  std::vector<svke::Model::Vertex> vertices {
+      // left face (white)
+      {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+      {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
+      {{-.5f, -.5f, .5f}, {.9f, .9f, .9f}},
+      {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+      {{-.5f, .5f, -.5f}, {.9f, .9f, .9f}},
+      {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
 
-  } else {
-    svke::Model::Vertex leftTop   = {0.5f * (left.position + top.position), 0.5f * (left.color + top.color)};
-    svke::Model::Vertex rightTop  = {0.5f * (right.position + top.position), 0.5f * (right.color + top.color)};
-    svke::Model::Vertex leftRight = {0.5f * (left.position + right.position), 0.5f * (left.color + right.color)};
+      // right face (yellow)
+      {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+      {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
+      {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+      {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
 
-    sierpinski(vertices, depth - 1, left, leftRight, leftTop);
-    sierpinski(vertices, depth - 1, leftRight, right, rightTop);
-    sierpinski(vertices, depth - 1, leftTop, rightTop, top);
+      // top face (orange, remember y axis points down)
+      {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+      {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+      {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+      {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+      {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+      {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+
+      // bottom face (red)
+      {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+      {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
+      {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+      {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+
+      // nose face (blue)
+      {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+      {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+      {{-.5f, .5f, 0.5f}, {.1f, .1, .8f}},
+      {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+      {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+      {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+
+      // tail face (green)
+      {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+      {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+      {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+      {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+      {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+      {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+
+  };
+
+  for (auto& v : vertices) {
+    v.position += offset;
   }
-}
+
+  return std::make_unique<svke::Model>(device, vertices);
+};
 
 namespace svke {
-  Application::Application(uint32_t width, uint32_t height, const std::string &window_name)
+  Application::Application(uint32_t width, uint32_t height, const std::string& window_name)
       : pWidth {width}, pHeight {height}, pWindowName {window_name} {
     pLoadGameObjects();
   }
@@ -47,23 +85,15 @@ namespace svke {
   }
 
   void Application::pLoadGameObjects() {
-    std::vector<Model::Vertex> vertices {};
+    std::shared_ptr<Model> cube_model = CreateCubeModel(pDevice, {0.0f, 0.0f, 0.0f});
 
-    sierpinski(vertices,
-               3,
-               {{-0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}},
-               {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-               {{0.0f, -0.5f}, {0.0f, 0.0f, 1.0f}});
+    auto cube_object = GameObject::CreateGameObject();
 
-    auto model = std::make_shared<Model>(pDevice, vertices);
+    cube_object.ObjectModel           = cube_model;
+    cube_object.Transform.translation = {0.0f, 0.0f, 0.5f};
+    cube_object.Transform.scale       = {0.5f, 0.5f, 0.5f};
+    cube_object.Transform.rotation    = {0.0f, 0.0f, 0.0f};
 
-    auto triangle                            = GameObject::CreateGameObject();
-    triangle.ObjectModel                     = model;
-    triangle.ObjectTransform2d.translation.x = .2f;
-    triangle.ObjectTransform2d.translation.y = -.3f;
-    triangle.ObjectTransform2d.scale         = {.5f, 1.5f};
-    triangle.ObjectTransform2d.rotation      = .25f * glm::two_pi<float>();
-
-    pGameObjects.push_back(std::move(triangle));
+    pGameObjects.push_back(std::move(cube_object));
   }
 }
