@@ -11,7 +11,7 @@ namespace svke {
   Renderer::~Renderer() { pFreeCommandBuffers(); }
 
   void Renderer::pCreateCommandBuffers() {
-    pCommandBuffer.resize(pSwapChain->getImageCount());
+    pCommandBuffer.resize(MAX_FRAMES_IN_FLIGHT);
 
     VkCommandBufferAllocateInfo alloc_info {};
 
@@ -52,14 +52,7 @@ namespace svke {
       if (!old_swapchain->CompareSwapFormats(*pSwapChain.get())) {
         throw std::runtime_error("Swapchain image or depth format has changed");
       }
-
-      if (pSwapChain->getImageCount() != pCommandBuffer.size()) {
-        pFreeCommandBuffers();
-        pCreateCommandBuffers();
-      }
     }
-
-    // COME BACK HERE
   }
 
   VkCommandBuffer Renderer::BeginFrame() {
@@ -81,21 +74,21 @@ namespace svke {
     VkCommandBufferBeginInfo begin_info {};
     begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-    if (vkBeginCommandBuffer(pCommandBuffer[pCurrentImageIndex], &begin_info) != VK_SUCCESS) {
+    if (vkBeginCommandBuffer(pCommandBuffer[pCurrentFrameIndex], &begin_info) != VK_SUCCESS) {
       throw std::runtime_error("Failed to begin recording command buffer");
     }
 
-    return pCommandBuffer[pCurrentImageIndex];
+    return pCommandBuffer[pCurrentFrameIndex];
   }
 
   void Renderer::EndFrame() {
     assert(pIsFrameStarted && "Cannot end a frame without one being started");
 
-    if (vkEndCommandBuffer(pCommandBuffer[pCurrentImageIndex]) != VK_SUCCESS) {
+    if (vkEndCommandBuffer(pCommandBuffer[pCurrentFrameIndex]) != VK_SUCCESS) {
       throw std::runtime_error("Failed to record command buffer");
     }
 
-    auto result = pSwapChain->SubmitCommandBuffers(&pCommandBuffer[pCurrentImageIndex], &pCurrentImageIndex);
+    auto result = pSwapChain->SubmitCommandBuffers(&pCommandBuffer[pCurrentFrameIndex], &pCurrentImageIndex);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || pWindow.WasResized()) {
       pWindow.ResetResize();
@@ -104,12 +97,13 @@ namespace svke {
       throw std::runtime_error("Failed to present swap chain image");
     }
 
-    pIsFrameStarted = false;
+    pIsFrameStarted    = false;
+    pCurrentFrameIndex = (pCurrentFrameIndex + 1) % MAX_FRAMES_IN_FLIGHT;
   }
 
   void Renderer::BeginSwapChainRenderPass(VkCommandBuffer command_buffer) {
     assert(pIsFrameStarted && "Cannot begin a swapchain render pass when no frame is in progress");
-    assert(command_buffer == pCommandBuffer[pCurrentImageIndex] &&
+    assert(command_buffer == pCommandBuffer[pCurrentFrameIndex] &&
            "Cannot begin swapchain render pass on commadn buffer of a different frame");
 
     VkRenderPassBeginInfo render_pass_info {};
@@ -150,7 +144,7 @@ namespace svke {
 
   void Renderer::EndSwapChainRenderPass(VkCommandBuffer command_buffer) {
     assert(pIsFrameStarted && "Cannot end a swapchain render pass when no frame is in progress");
-    assert(command_buffer == pCommandBuffer[pCurrentImageIndex] &&
+    assert(command_buffer == pCommandBuffer[pCurrentFrameIndex] &&
            "Cannot end swapchain render pass on commadn buffer of a different frame");
 
     vkCmdEndRenderPass(command_buffer);

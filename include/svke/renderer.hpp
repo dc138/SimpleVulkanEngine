@@ -20,11 +20,6 @@ namespace svke {
     bool         isFrameInProgress() const { return pIsFrameStarted; }
     VkRenderPass getSwapChainRenderPass() const { return pSwapChain->getRenderPass(); }
 
-    VkCommandBuffer getCurrentCommandBuffer() {
-      assert(pIsFrameStarted && "Cannot get command buffer when no frame is in progress");
-      return pCommandBuffer[pCurrentImageIndex];
-    };
-
    public:
     VkCommandBuffer BeginFrame();
     void            EndFrame();
@@ -44,6 +39,7 @@ namespace svke {
 
    private:
     uint32_t pCurrentImageIndex {0};
+    uint32_t pCurrentFrameIndex {0};
     bool     pIsFrameStarted {false};
   };
 }  // namespace svke
