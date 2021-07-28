@@ -43,7 +43,9 @@ namespace svke {
         std::make_unique<Pipeline>(pDevice, "shaders/simple.vert.spv", "shaders/simple.frag.spv", pipeline_config);
   }
 
-  void SimpleRenderSystem::RenderGameObjects(VkCommandBuffer command_buffer, std::vector<GameObject>& game_objects) {
+  void SimpleRenderSystem::RenderGameObjects(VkCommandBuffer          command_buffer,
+                                             std::vector<GameObject>& game_objects,
+                                             const Camera&            camera) {
     pPipeline->Bind(command_buffer);
 
     for (auto& object : game_objects) {
@@ -52,7 +54,7 @@ namespace svke {
 
       PushConstantData push {};
 
-      push.transform = object.Transform.matrix();
+      push.transform = camera.getProjectionMatrix() * object.Transform.matrix();
 
       vkCmdPushConstants(command_buffer,
                          pPipelineLayout,

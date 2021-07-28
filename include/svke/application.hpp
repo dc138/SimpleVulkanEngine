@@ -1,6 +1,7 @@
 #ifndef SVKE_APPLICATION_HPP
 #define SVKE_APPLICATION_HPP
 
+#include "camera.hpp"
 #include "defines.hpp"
 #include "device.hpp"
 #include "game_object.hpp"
@@ -34,6 +35,7 @@ namespace svke {
     Device                  pDevice {pWindow};
     Renderer                pRenderer {pWindow, pDevice};
     SimpleRenderSystem      pSimpleRenderSystem {pDevice, pRenderer.getSwapChainRenderPass()};
+    Camera                  pCamera {};
     std::vector<GameObject> pGameObjects;
   };
 }

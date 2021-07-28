@@ -18,6 +18,7 @@ namespace svke {
 
    public:
     bool         isFrameInProgress() const { return pIsFrameStarted; }
+    float        getAspectRatio() const { return pSwapChain->getExtentAspectRatio(); }
     VkRenderPass getSwapChainRenderPass() const { return pSwapChain->getRenderPass(); }
 
    public:

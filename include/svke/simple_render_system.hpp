@@ -1,6 +1,7 @@
 #ifndef SVKE_SIMPLE_RENDER_SYSTEM_HPP
 #define SVKE_SIMPLE_RENDER_SYSTEM_HPP
 
+#include "camera.hpp"
 #include "defines.hpp"
 #include "device.hpp"
 #include "game_object.hpp"
@@ -25,7 +26,7 @@ namespace svke {
     void pCreatePipeline(VkRenderPass render_pass);
 
    public:
-    void RenderGameObjects(VkCommandBuffer command_buffer, std::vector<GameObject> &game_objects);
+    void RenderGameObjects(VkCommandBuffer command_buffer, std::vector<GameObject> &game_objects, const Camera &camera);
 
    private:
     Device &                  pDevice;

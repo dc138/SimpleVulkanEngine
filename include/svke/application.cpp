@@ -73,9 +73,11 @@ namespace svke {
     while (!pWindow.ShouldClose()) {
       glfwPollEvents();
 
+      pCamera.UsePerspectiveProjection(glm::radians(50.f), pRenderer.getAspectRatio(), 0.1f, 10.f);
+
       if (auto command_buffer = pRenderer.BeginFrame()) {
         pRenderer.BeginSwapChainRenderPass(command_buffer);
-        pSimpleRenderSystem.RenderGameObjects(command_buffer, pGameObjects);
+        pSimpleRenderSystem.RenderGameObjects(command_buffer, pGameObjects, pCamera);
         pRenderer.EndSwapChainRenderPass(command_buffer);
         pRenderer.EndFrame();
       }
@@ -90,7 +92,7 @@ namespace svke {
     auto cube_object = GameObject::CreateGameObject();
 
     cube_object.ObjectModel           = cube_model;
-    cube_object.Transform.translation = {0.0f, 0.0f, 0.5f};
+    cube_object.Transform.translation = {0.0f, 0.0f, 2.5f};
     cube_object.Transform.scale       = {0.5f, 0.5f, 0.5f};
     cube_object.Transform.rotation    = {0.0f, 0.0f, 0.0f};
 
