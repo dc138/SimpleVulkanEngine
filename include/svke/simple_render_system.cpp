@@ -54,7 +54,7 @@ namespace svke {
 
       PushConstantData push {};
 
-      push.transform = camera.getProjectionMatrix() * object.Transform.matrix();
+      push.transform = (camera.getProjectionMatrix() * camera.getViewMatrix()) * object.Transform.matrix();
 
       vkCmdPushConstants(command_buffer,
                          pPipelineLayout,
@@ -67,4 +67,4 @@ namespace svke {
       object.ObjectModel->Draw(command_buffer);
     }
   }
-}  // namespace svke
+}

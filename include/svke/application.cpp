@@ -70,6 +70,8 @@ namespace svke {
   Application::~Application() {}
 
   void Application::Run() {
+    pCamera.SetViewDirection(glm::vec3(0.0f), glm::vec3(0.5f, 0.0f, 1.0f));
+
     while (!pWindow.ShouldClose()) {
       glfwPollEvents();
 
