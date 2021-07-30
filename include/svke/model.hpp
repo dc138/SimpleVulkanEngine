@@ -17,6 +17,7 @@ namespace svke {
     };
 
    public:
+    Model(Device& device, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
     Model(Device& device, const std::vector<Vertex>& vertices);
     ~Model();
 
@@ -29,12 +30,19 @@ namespace svke {
 
    private:
     void pCreateVertexBuffer(const std::vector<Vertex>& vertices);
+    void pCreateIndexBuffer(const std::vector<uint32_t>& indices);
 
    private:
-    Device&        pDevice;
+    Device& pDevice;
+
     VkBuffer       pVertexBuffer;
     VkDeviceMemory pVertexBufferMemory;
     uint32_t       pVertexCount;
+
+    bool           pUsingIndexBuffer {false};
+    VkBuffer       pIndexBuffer;
+    VkDeviceMemory pIndexBufferMemory;
+    uint32_t       pIndexCount;
   };
 }
 
